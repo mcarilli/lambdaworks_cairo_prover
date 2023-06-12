@@ -443,6 +443,8 @@ fn interp_from_num_denom<F: IsFFTField>(
     // so FRI appears strong enough to reject polys whose degree is even slightly too high
     let result = Polynomial::interpolate(
         &domain.lde_roots_of_unity_coset[..target_deg], &evals[..target_deg]).unwrap();
+    println!("num.coefficients.len(), denom.coefficients.len(), result.coefficients.len() = {}, {}, {}",
+        num.coefficients.len(), denom.coefficients.len(), result.coefficients.len());
     // sanity checks that interpolated poly has the expected relationship to non-interpreted poly
     if !evil {
         for (coeff_interp, coeff) in result.coefficients.iter().zip(&poly_sanity_check.coefficients) {
@@ -548,8 +550,10 @@ fn compute_deep_composition_poly<A: AIR, F: IsFFTField>(
         }
     }
 
-    let deep = h_1_term + h_2_term + trace_terms;
-    let deep_from_interp = h_1_from_interp + h_2_from_interp + trace_terms_from_interp;
+    let deep = h_1_term + h_2_term + &trace_terms;
+    // I don't think trace terms need the evil interpolation, they should be low degree even for a malicious trace
+    let deep_from_interp = h_1_from_interp + h_2_from_interp + trace_terms;
+    // let deep_from_interp = h_1_from_interp + h_2_from_interp + trace_terms_from_interp;
     if evil {
         println!("deep_from_interp.coefficients.len() {}", deep_from_interp.coefficients.len());
         println!("deep.coefficients.len() {}", deep.coefficients.len());
