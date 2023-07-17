@@ -23,6 +23,7 @@ use lambdaworks_stark::{
             fibonacci_2_columns::{self, Fibonacci2ColsAIR},
             fibonacci_rap::{fibonacci_rap_trace, FibonacciRAP, FibonacciRAPPublicInputs},
             quadratic_air::{self, QuadraticAIR, QuadraticPublicInputs},
+            cubic_air::{self, CubicAIR, CubicPublicInputs},
             simple_fibonacci::{self, FibonacciAIR, FibonacciPublicInputs},
         },
         proof::options::ProofOptions,
@@ -99,12 +100,40 @@ fn test_prove_fib_2_cols() {
 fn test_prove_quadratic() {
     let trace = quadratic_air::quadratic_trace(FE::from(3), 4);
 
-    let proof_options = ProofOptions::default_test_options();
+    // let proof_options = ProofOptions::default_test_options();
+    let proof_options = ProofOptions {
+        blowup_factor: 4,
+        fri_number_of_queries: 3,
+        coset_offset: 3,
+        grinding_factor: 1,
+    };
 
     let pub_inputs = QuadraticPublicInputs { a0: FE::from(3) };
 
     let proof = prove::<F, QuadraticAIR<F>>(&trace, &pub_inputs, &proof_options).unwrap();
     assert!(verify::<F, QuadraticAIR<F>>(
+        &proof,
+        &pub_inputs,
+        &proof_options
+    ));
+}
+
+#[test_log::test]
+fn test_prove_cubic() {
+    let trace = cubic_air::cubic_trace(FE::from(3), 8);
+
+    // let proof_options = ProofOptions::default_test_options();
+    let proof_options = ProofOptions {
+        blowup_factor: 4,
+        fri_number_of_queries: 3,
+        coset_offset: 3,
+        grinding_factor: 1,
+    };
+
+    let pub_inputs = CubicPublicInputs { a0: FE::from(3) };
+
+    let proof = prove::<F, CubicAIR<F>>(&trace, &pub_inputs, &proof_options).unwrap();
+    assert!(verify::<F, CubicAIR<F>>(
         &proof,
         &pub_inputs,
         &proof_options

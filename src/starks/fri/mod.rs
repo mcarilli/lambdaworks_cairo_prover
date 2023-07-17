@@ -32,9 +32,13 @@ where
     let mut fri_layer_list = Vec::with_capacity(number_layers);
     let mut current_layer = FriLayer::new(&p_0, coset_offset, domain_size);
     fri_layer_list.push(current_layer.clone());
+    println!("p_0.coefficients.len() {}", p_0.coefficients.len());
+    println!("number_layers {}", number_layers);
+    println!("domain_size first {}", domain_size);
     let mut current_poly = p_0;
     // >>>> Send commitment: [p₀]
     transcript.append(&current_layer.merkle_tree.root);
+
 
     let mut coset_offset = coset_offset.clone();
 
@@ -58,6 +62,9 @@ where
     let zeta = transcript_to_field(transcript);
 
     let last_poly = fold_polynomial(&current_poly, &zeta);
+
+    println!("domain_size last {}", domain_size);
+    println!("last_poly.coefficients.len() {}", last_poly.coefficients.len());
 
     let last_value = last_poly
         .coefficients()
@@ -83,6 +90,7 @@ where
     T: Transcript,
     FieldElement<F>: ByteConversion,
 {
+    println!("fri_layers.len() {}", fri_layers.len());
     if !fri_layers.is_empty() {
         let number_of_queries = air.options().fri_number_of_queries;
         let iotas = (0..number_of_queries)

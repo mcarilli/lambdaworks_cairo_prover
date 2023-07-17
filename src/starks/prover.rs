@@ -249,6 +249,7 @@ where
 
     // Get the composition poly H
     let composition_poly = constraint_evaluations.compute_composition_poly(&domain.coset_offset);
+    println!("composition_poly.coefficients.len() {}", composition_poly.coefficients.len());
     let (composition_poly_even, composition_poly_odd) = composition_poly.even_odd_decomposition();
 
     let lde_composition_poly_even_evaluations = evaluate_polynomial_on_lde_domain(
@@ -478,6 +479,11 @@ where
                 trace_terms + trace_int
             });
 
+    println!("h_1_term,h_2_term,trace_term.coefficients.len() {} {} {}",
+        h_1_term.coefficients.len(),
+        h_2_term.coefficients.len(),
+        trace_term.coefficients.len(),
+    );
     h_1_term + h_2_term + trace_term
 }
 

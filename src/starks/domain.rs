@@ -36,6 +36,7 @@ impl<F: IsFFTField> Domain<F> {
         .unwrap();
 
         let lde_root_order = (air.trace_length() * blowup_factor).trailing_zeros();
+        println!("air.trace_length() {} blowup_factor {}", air.trace_length(), blowup_factor);
         let lde_roots_of_unity_coset = get_powers_of_primitive_root_coset(
             lde_root_order as u64,
             air.trace_length() * blowup_factor,

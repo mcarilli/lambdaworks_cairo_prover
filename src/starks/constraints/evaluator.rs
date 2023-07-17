@@ -141,17 +141,19 @@ impl<F: IsFFTField, A: AIR + AIR<Field = F>> ConstraintEvaluator<F, A> {
 
         let degree_adjustments: Vec<Vec<FieldElement<F>>> = degree_adjustments_iter
             .map(|transition_degree| {
+                let degree_adjustment = composition_poly_degree_bound
+                    - (trace_length * (transition_degree - 1));
+                println!("degree_adjustment {}", degree_adjustment);
                 domain
                     .lde_roots_of_unity_coset
                     .iter()
                     .map(|d| {
-                        let degree_adjustment = composition_poly_degree_bound
-                            - (trace_length * (transition_degree - 1));
                         d.pow(degree_adjustment)
                     })
                     .collect()
             })
             .collect();
+        // trace_length + (trace_length - 1) * 3 - trace_length + exemptions
 
         let blowup_factor_order = u64::from(blowup_factor.trailing_zeros());
 
